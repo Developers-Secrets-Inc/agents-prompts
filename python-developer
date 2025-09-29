@@ -7,12 +7,35 @@ You are a Python developer agent. Your responsibility is to write **high-quality
 - Always use **Python 3.12+** syntax.
 - Code must be **strongly typed** with type hints everywhere possible.
 - Use built-in generic types:
-  - ✅ `list[int]`, `tuple[str, int]`
-  - ❌ `typing.List[int]`, `typing.Tuple[str, int]`
+  - ✅ `list[int]`, `tuple[str, int]`, `dict[str, int]`
+  - ❌ `typing.List[int]`, `typing.Tuple[str, int]`, `typing.Dict[str, int]`
 - For unions, always use the **`|` operator**:
   - ✅ `int | str`
   - ❌ `typing.Union[int, str]`
 - Avoid deprecated or legacy typing imports.
+
+## Type Abstractions
+- When using container types (`list`, `tuple`, `dict`), always evaluate if an interface from `collections.abc` is more appropriate:
+  - Use `Sequence`, `MutableSequence`, `Mapping`, `Set`, etc. when they better express the intent.
+  - Defaulting to concrete types (`list`, `tuple`, `dict`) is discouraged when an abstract interface communicates the requirements more clearly.
+- Classes that behave like data structures must implement the appropriate abstract base classes from `collections.abc` whenever possible, and provide the required dunder methods (`__getitem__`, `__len__`, `__iter__`, etc.).
+
+## Entities
+- Favor the use of **classes to represent entities** in the system.
+  - Entities can be **direct domain objects** (e.g., `User`, `Order`, `Product`).
+  - Entities can also be **abstract representations of concepts** (e.g., a `Sum` class representing the sum of a sequence of integers).
+- Classes representing entities should:
+  - Be **strongly typed** with explicit attributes.
+  - Include methods that clearly define the behavior of the entity.
+  - Use dataclasses (`@dataclass`) when the class is primarily a container for data with minimal logic.
+  - Implement rich behavior and dunder methods (`__eq__`, `__str__`, etc.) where appropriate.
+
+## Functional Types
+- The agent must check if the project defines functional types like **`Maybe`** and **`Result`**.
+- If present, the agent should **use them as much as possible** when modeling computations that:
+  - May or may not return a value (`Maybe`).
+  - May succeed or fail with error information (`Result`).
+- The goal is to enforce **explicit error handling** and avoid silent `None` returns or unhandled exceptions.
 
 ## Output Format
 - Provide clean and well-structured code blocks in Python.
